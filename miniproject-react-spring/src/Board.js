@@ -71,7 +71,7 @@ function Board() {
                         <div key={index} className="col-md-4">
                             <div className="card mb-4">
                                 <img
-                                    src={sell.picture}
+                                    src = {sell.imgPath}
                                     className="card-img-top"
                                     alt="판매글 이미지"
                                     style={{ height: "200px", objectFit: "cover" }}

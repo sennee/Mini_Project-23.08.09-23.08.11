@@ -1,26 +1,19 @@
 package com.example.miniProject4.controller;
 
 import com.example.miniProject4.DTO.SellDTO;
-import com.example.miniProject4.board.Buy;
-import com.example.miniProject4.board.BuyRepository;
 import com.example.miniProject4.board.Sell;
 import com.example.miniProject4.board.SellRepository;
 import com.example.miniProject4.service.SellBuyService;
 import com.example.miniProject4.service.UserService;
 import com.example.miniProject4.user.UserInfo;
-import com.example.miniProject4.user.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -31,7 +24,6 @@ public class SellController {
     private final SellRepository sellRepository;
     private final UserService userService;
     private final SellBuyService sellBuyService;
-
 
     @GetMapping("/board")
     public List<SellDTO> getSellList() {
@@ -54,10 +46,17 @@ public class SellController {
     }
 
     @PostMapping("/sell-create")
-    public ResponseEntity<?> sellSubmit(@RequestBody Map<String, String> map) {
-        String subject = map.get("subject");
-        String content = map.get("content");
-        String username = map.get("currentUser");
+    public ResponseEntity<?> sellSubmit(@RequestParam("subject") String subject,
+                                        @RequestParam("content") String content,
+                                        @RequestParam("price") int price,
+                                        @RequestParam("currentUser") String username,
+                                        @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
+
+        System.out.println(subject);
+        System.out.println(content);
+        System.out.println(price);
+        System.out.println(username);
+        System.out.println(image);
 
         UserInfo seller = userService.getUserByUsername(username); // 해당 username으로 사용자 정보 가져오기
 
@@ -65,12 +64,7 @@ public class SellController {
             return ResponseEntity.badRequest().body("사용자 정보를 찾을 수 없습니다.");
         }
 
-        try {
-            int price = Integer.parseInt(map.get("price"));
-            sellBuyService.createSell(subject, content,price,seller);
-        } catch (NumberFormatException e) {
-            sellBuyService.createSell(subject, content,0,seller);
-        }
+        sellBuyService.createSell(subject, content,price,image, seller);
 
         return ResponseEntity.ok().build();
     }
@@ -97,19 +91,21 @@ public class SellController {
     }
 
     @PutMapping("/sell-modify/{id}")
-    public ResponseEntity<String> updateSell(@PathVariable Integer id, @RequestBody Map<String, String> map) {
+    public ResponseEntity<String> updateSell(@PathVariable Integer id,
+                                             @RequestParam("subject") String subject,
+                                             @RequestParam("content") String content,
+                                             @RequestParam("price") int price,
+                                             @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
+
+        System.out.println("너 들어오니?");
         Sell sell = sellRepository.getReferenceById(id);
         if (sell == null) {
             return ResponseEntity.notFound().build();
         } else {
-            String subject = map.get("subject");
-            String content = map.get("content");
-
             try {
-                int price = Integer.parseInt(map.get("price"));
-                sellBuyService.modifySell(sell, subject, content, price);
+                sellBuyService.modifySell(sell, subject, content, price, image);
             } catch (NumberFormatException e) {
-                sellBuyService.modifySell(sell, subject, content, 0);
+                sellBuyService.modifySell(sell, subject, content, 0, image);
             }
 
             return ResponseEntity.ok().build();
@@ -121,7 +117,8 @@ public class SellController {
         Optional<Sell> sell = this.sellRepository.findById(id);
         if (sell.isPresent()) {
             Sell s = sell.get();
-            sellRepository.delete(s);
+            sellBuyService.deleteSell(s);
+//            sellRepository.delete(s);
             return null;
         } else {
             return "not delete";

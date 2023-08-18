@@ -15,7 +15,8 @@ public class SellDTO {
     private String subject;
     private String content;
     private Integer price;
-    private String picture;
+    private String imgName;
+    private String imgPath;
     private LocalDateTime createDate;
     private LocalDateTime modifyDate;
     private String sellerUsername; // 판매자의 username 정보
@@ -27,7 +28,9 @@ public class SellDTO {
         sellDTO.setSubject(sell.getSubject());
         sellDTO.setContent(sell.getContent());
         sellDTO.setPrice(sell.getPrice());
-        sellDTO.setPicture(sell.getPicture());
+//        sellDTO.setPicture(sell.getPicture());
+        sellDTO.setImgName(sell.getImgName());
+        sellDTO.setImgPath(sell.getImgPath());
         sellDTO.setCreateDate(sell.getCreateDate());
         sellDTO.setModifyDate(sell.getModifyDate());
         sellDTO.setSellerUsername(sell.getSeller().getUsername()); // 판매자의 username 정보 설정

@@ -153,7 +153,8 @@ function BoardDetail() {
             <h2 className="border-bottom py-2">{sell.subject}</h2>
                 <div className="text-center">
                     <img
-                        src={sell.picture} // 판매글 이미지 경로
+                        // src = {`http://localhost:8080${sell.imgPath}`} // 판매글 이미지 경로
+                        src = {sell.imgPath}
                         className="card-img-top"
                         alt="판매글 이미지"
                         style={{maxWidth: '50%', height: 'auto'}}

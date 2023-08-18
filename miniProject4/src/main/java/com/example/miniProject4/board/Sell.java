@@ -28,7 +28,10 @@ public class Sell { // Question
     private Integer price;
 
     @Column
-    private String picture;
+    private String imgName;
+
+    @Column
+    private String imgPath;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createDate;
