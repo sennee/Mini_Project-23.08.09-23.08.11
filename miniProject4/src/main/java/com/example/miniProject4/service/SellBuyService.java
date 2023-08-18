@@ -57,7 +57,6 @@ public class SellBuyService {
         sell.setPrice(price);
         sell.setModifyDate(LocalDateTime.now());
 
-        System.out.println("upload" + upload);
         if (upload == null){
             this.sellRepository.save(sell);
         } else {
