@@ -97,7 +97,6 @@ public class SellController {
                                              @RequestParam("price") int price,
                                              @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
 
-        System.out.println("너 들어오니?");
         Sell sell = sellRepository.getReferenceById(id);
         if (sell == null) {
             return ResponseEntity.notFound().build();
@@ -118,7 +117,6 @@ public class SellController {
         if (sell.isPresent()) {
             Sell s = sell.get();
             sellBuyService.deleteSell(s);
-//            sellRepository.delete(s);
             return null;
         } else {
             return "not delete";
